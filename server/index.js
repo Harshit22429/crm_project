@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", require("./router/userRoute"));
-
+app.use("/report", require("./router/reportRouter"))
 app.use("/customer", require("./router/customerRoute"));
 
 app.use("/desposition", require("./router/despositionRoute"));

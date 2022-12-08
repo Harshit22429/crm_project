@@ -23,6 +23,10 @@ const Desposition = new mongoose.Schema({
     lead_id:{
         type:Number,
         required:true        
+    },
+    dispositionCount:{
+        type:Number,
+        default:0
     }
 })
 
