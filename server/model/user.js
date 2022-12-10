@@ -21,10 +21,10 @@ const User = new mongoose.Schema({
         required:true,
         unique:true
     },
-    roles:[{
+    roles:{
         type:String,
         required:true
-    }],    
+    },    
     phone:{
         type:Number,
         required:true,
@@ -43,7 +43,8 @@ const User = new mongoose.Schema({
     },refreshToken:{
         type:String
     }
-})
+},
+{timestamps:true})
 User.plugin(AutoIncrement,{
     inc_field:"userId",
     start_seq:1000

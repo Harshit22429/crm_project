@@ -25,12 +25,10 @@ const login = async (req, res) => {
     // console.log(process.env.SECRET_KEY)
     // console.log(userLogin)
     if (userLogin) {
-      const roles = Object.values(userLogin.roles)
+      console.log(userLogin)      
       const accessToken = jwt.sign({
         "userInfo": {
-          "name": userLogin.name,
-          "roles": roles
-
+          "name": userLogin.name
         }
       }, process.env.SECRET_KEY,
         {
