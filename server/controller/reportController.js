@@ -15,7 +15,7 @@ const getCompleteReport = async (req, res) => {
             const customerName = await Customer.aggregate([
                 {$group:{_id:"$name"}}
             ])
-            console.log(customerName)
+            console.log(  `these are customer name :${customerName}`)
             // const customer = await Customer.aggregate([
             //     {$match:{salesAgent:slpName}},
                 
@@ -38,7 +38,7 @@ const getCompleteReport = async (req, res) => {
         const  customerDesposition = await Customer.aggregate([
             {$group:{_id:"$dispositionCount"}}
         ])
-        console.log(customerDesposition)
+        console.log(customerDesposition )
         
         
 
