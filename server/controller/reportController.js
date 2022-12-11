@@ -1,76 +1,65 @@
 const Desposition = require('../model/desposition')
 const Customer = require('../model/cutomer')
 const User = require('../model/user');
-
+const Repot_List = require("../config/Report_list")
 const getCompleteReport = async (req, res) => {
     try {
 
-        const parentId = req?.params?.parentId;
-        const slpList =await User.aggregate([
-            {$match:{parentId:parentId}},
-            {$group:{_id:"$name"}}
-        ])
-        for (i=0;i<slpList.length;i++){
-            const slpName= Object.values(slpList[i])[0]
-            const customerName = await Customer.aggregate([
-                {$group:{_id:"$name"}}
-            ])
-            console.log(  `these are customer name :${customerName}`)
-            // const customer = await Customer.aggregate([
-            //     {$match:{salesAgent:slpName}},
+        const parentId = parseInt(req?.params?.parentId);
+        // console.log(typeof (parentId))
+        const slpList = await User.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { parentId: parentId },
+                        { userId: parentId }
+                    ]
+                },
                 
-            //     {$count:"customerCount"}
-            // ])
-            // console.log(customer)
-            
-            // let leadNum = 0;
-            // // console.log(typeof(leadNum))
-            // leadNum =  leadNum + parseInt(Object.values(customerDesposition[0]))
-            // console.log(leadNum)
-            // // for(j=0; j<customerDesposition.length; j++){
-            // //     // console.log(typeof(leadNum))
-            // // }
-            // console.log(customerDesposition.length)
-            // console.log(leadNum)
+            },
 
-            // {$group:{_id:"$dispositionCount"}},
-        }
-        const  customerDesposition = await Customer.aggregate([
-            {$group:{_id:"$dispositionCount"}}
+            { $project: { _id: 0, name: 1, userId: 1 } },
+
         ])
-        console.log(customerDesposition )
-        
-        
+        console.log(slpList)
 
-
-
-
-
-
-
-        res.send(slpList)
-        // const parentId = req?.params?.parentId;
-        // const user = await User.find({ parentId: parentId })
-        // const slpList = [];
-        // user.map((user) => { slpList.push(user.name) })
-
-        // let customerLength = [];
-        // let totalDesposition = [];
-        // for (i = 0; i < slpList.length; i++) {
-        //     const slpName = slpList[i]      //console.log(slpName)            
-        //     customer = await Customer.find({ salesAgent: slpName })
-        //     customerLength.push(customer.length)               //console.log( customerLength) 
-        //     const despositionCount = await customer.map(user => user.dispositionCount)
-        //     let totalVal = 0;
-        //     const totalCount = () => {
-        //         for (j = 0; j < despositionCount.length; j++) {
-        //             totalVal += despositionCount[j]
+        const slpId = slpList.map((x)=>x.userId)
+        console.log(slpId) 
+        // const userId = 1031
+        // const desposition = await User.aggregate([
+        //     {
+        //         $lookup: {
+        //             from: "Desposition",
+        //             localField: "userId",
+        //             foreignField: "userId",
+        //             as: "despostion_details"
         //         }
-        //         return totalVal
         //     }
-        //     totalDesposition.push(totalCount())
-        // }
-        // res.status(200).json({ slpList, customerLength, totalDesposition })
+        // ])
+        // console.log(desposition)
+
+       
+        // const desposition = await slpId.map( async (x)=>{ await Desposition.aggregate([
+        //     { $match: { userId: x } },
+        //     { $group: { _id: "$desposition", count: { $sum: 1 } } }
+
+        // ])})
+        // console.log(desposition)
+        const despositionReport = []
+        for (i=0;i<slpId.length;i++){
+            slpCurrentId = slpId[i];
+            const detail = await Desposition.aggregate([
+                    { $match: { userId: slpCurrentId } },
+                    { $group: { _id: "$desposition", count: { $sum: 1 } } }
+        
+                ])
+            despositionReport.push(detail)
+        }
+
+
+
+        console.log(despositionReport)
+        res.send(despositionReport)
     } catch (error) {
         console.log(error)
     }

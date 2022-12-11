@@ -35,7 +35,7 @@ const User = new mongoose.Schema({
         required:true
     },
     parentId:{
-        type:String        
+        type:Number        
     },
     createdAt:{
         type:String,
